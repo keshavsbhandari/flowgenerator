@@ -68,8 +68,30 @@ class NODE_PT_MAINPANEL(bpy.types.Panel):
         
         row = layout.column()
         row.operator('node.test_operator')
-        row.operator('node.set_camera')
+        #row.operator('node.set_camera')
 
+
+class NODE_CAMERASETUP_PANEL(bpy.types.Panel):
+    bl_label = "Camera Setup Node Group"
+    bl_idname = "NODE_CAMERASETUP_PANEL"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = 'Camera Setup' 
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        mytool = scene.my_tool
+        layout.prop(mytool, "resolution")
+        layout.prop(mytool, "cube_width")
+        layout.prop(mytool, "equi_width")
+        layout.prop(mytool, "min_depth")
+        layout.prop(mytool, "max_depth")
+        layout.prop(mytool, "camera_list")
+        
+        row = layout.column()
+        #row.operator('node.test_operator')
+        row.operator('node.set_camera')
 
 class CAMERA_SETUP(bpy.types.Operator):
     #bpy.data.objects['Camera']
@@ -533,7 +555,7 @@ class ADD_TO_VIEW_PORT(NODE_PT_MAINPANEL):
     bl_space_type = 'VIEW_3D'
    
 #classes = [MyProperties, CAMERA_SETUP, NODE_PT_MAINPANEL, ADD_TO_VIEW_PORT, NODE_OT_TEST]
-classes = [MyProperties, CAMERA_SETUP, NODE_PT_MAINPANEL, NODE_OT_TEST]   
+classes = [MyProperties, CAMERA_SETUP, NODE_PT_MAINPANEL,NODE_CAMERASETUP_PANEL, NODE_OT_TEST]   
     
 def register():
     for cl in classes:
