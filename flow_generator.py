@@ -134,11 +134,22 @@ class CAMERA_SETUP(bpy.types.Operator):
                             "Camera_L",
                         ]
         
+        
         # for cam_name in list_of_camera:
         #     if bpy.data.cameras.get(cam_name):    
         #         cam = bpy.data.cameras.get(cam_name)
         #         bpy.data.cameras.remove(cam)
-
+        
+        #bpy.data.objects.get("Camera_R")
+        
+        location = 0,0,0
+        
+        for cam_name in list_of_camera:
+            cam = bpy.data.objects.get(cam_name)
+            if cam:
+                location = cam.location
+                break
+        
         for camname, cam in bpy.data.cameras.items():
             if camname.split('.')[0] in list_of_camera:
                 bpy.data.cameras.remove(cam)
@@ -152,6 +163,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_EQ_F.data.cycles.panorama_type = "EQUIRECTANGULAR"
         Cam_obj_EQ_F.data.sensor_width = 50
         Cam_obj_EQ_F.rotation_euler = front
+        Cam_obj_EQ_F.location = location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_F)
 
         # EQUIRECTANGULAR BACK
@@ -163,6 +175,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_EQ_B.data.cycles.panorama_type = "EQUIRECTANGULAR"
         Cam_obj_EQ_B.data.sensor_width = 50
         Cam_obj_EQ_B.rotation_euler = back
+        Cam_obj_EQ_B.location = location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_B)
 
         # EQUIRECTANGULAR TOP
@@ -174,6 +187,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_EQ_T.data.cycles.panorama_type = "EQUIRECTANGULAR"
         Cam_obj_EQ_T.data.sensor_width = 50
         Cam_obj_EQ_T.rotation_euler = top
+        Cam_obj_EQ_T.location = location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_T)
 
         # EQUIRECTANGULAR DOWN
@@ -185,6 +199,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_EQ_D.data.cycles.panorama_type = "EQUIRECTANGULAR"
         Cam_obj_EQ_D.data.sensor_width = 50
         Cam_obj_EQ_D.rotation_euler = down
+        Cam_obj_EQ_D.location = location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_D)
 
 
@@ -197,6 +212,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_EQ_R.data.cycles.panorama_type = "EQUIRECTANGULAR"
         Cam_obj_EQ_R.data.sensor_width = 50
         Cam_obj_EQ_R.rotation_euler = right
+        Cam_obj_EQ_R.location = location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_R)
 
         # EQUIRECTANGULAR LEFT
@@ -208,6 +224,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_EQ_L.data.cycles.panorama_type = "EQUIRECTANGULAR"
         Cam_obj_EQ_L.data.sensor_width = 50
         Cam_obj_EQ_L.rotation_euler = left
+        Cam_obj_EQ_L.location = location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_L)
 
 
@@ -222,6 +239,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_F.data.clip_end = 1000
         Cam_obj_F.data.sensor_width = 50
         Cam_obj_F.rotation_euler = front
+        Cam_obj_F.location = location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_F)
 
         # PERSPECTIVE BACK
@@ -233,6 +251,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_B.data.clip_end = 1000
         Cam_obj_B.data.sensor_width = 50
         Cam_obj_B.rotation_euler = back
+        Cam_obj_B.location = location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_B)
 
         # PERSPECTIVE TOP
@@ -244,6 +263,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_T.data.clip_end = 1000
         Cam_obj_T.data.sensor_width = 50
         Cam_obj_T.rotation_euler = top
+        Cam_obj_T.location = location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_T)
 
 
@@ -256,6 +276,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_D.data.clip_end = 1000
         Cam_obj_D.data.sensor_width = 50
         Cam_obj_D.rotation_euler = down
+        Cam_obj_D.location = location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_D)
 
 
@@ -268,6 +289,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_L.data.clip_end = 1000
         Cam_obj_L.data.sensor_width = 50
         Cam_obj_L.rotation_euler = left
+        Cam_obj_L.location = location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_L)
 
 
@@ -280,6 +302,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_R.data.clip_end = 1000
         Cam_obj_R.data.sensor_width = 50
         Cam_obj_R.rotation_euler = right
+        Cam_obj_R.location = location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_R)
 
 
@@ -298,11 +321,9 @@ class CAMERA_SETUP(bpy.types.Operator):
             scene.render.resolution_y = mytool.equi_width//2
         else:
             scene.render.resolution_x = mytool.cube_width
-            scene.render.resolution_y = mytool.cube_width  
+            scene.render.resolution_y = mytool.cube_width
 
-        
-
-        
+                
         return {'FINISHED'}
 
 
