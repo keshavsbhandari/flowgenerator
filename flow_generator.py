@@ -175,7 +175,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_EQ_B.data.cycles.panorama_type = "EQUIRECTANGULAR"
         Cam_obj_EQ_B.data.sensor_width = 50
         Cam_obj_EQ_B.rotation_euler = back
-        Cam_obj_EQ_B.location = location
+        Cam_obj_EQ_B.location = Cam_obj_EQ_F.location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_B)
 
         # EQUIRECTANGULAR TOP
@@ -187,7 +187,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_EQ_T.data.cycles.panorama_type = "EQUIRECTANGULAR"
         Cam_obj_EQ_T.data.sensor_width = 50
         Cam_obj_EQ_T.rotation_euler = top
-        Cam_obj_EQ_T.location = location
+        Cam_obj_EQ_T.location = Cam_obj_EQ_F.location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_T)
 
         # EQUIRECTANGULAR DOWN
@@ -199,7 +199,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_EQ_D.data.cycles.panorama_type = "EQUIRECTANGULAR"
         Cam_obj_EQ_D.data.sensor_width = 50
         Cam_obj_EQ_D.rotation_euler = down
-        Cam_obj_EQ_D.location = location
+        Cam_obj_EQ_D.location = Cam_obj_EQ_F.location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_D)
 
 
@@ -212,7 +212,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_EQ_R.data.cycles.panorama_type = "EQUIRECTANGULAR"
         Cam_obj_EQ_R.data.sensor_width = 50
         Cam_obj_EQ_R.rotation_euler = right
-        Cam_obj_EQ_R.location = location
+        Cam_obj_EQ_R.location = Cam_obj_EQ_F.location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_R)
 
         # EQUIRECTANGULAR LEFT
@@ -224,7 +224,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_EQ_L.data.cycles.panorama_type = "EQUIRECTANGULAR"
         Cam_obj_EQ_L.data.sensor_width = 50
         Cam_obj_EQ_L.rotation_euler = left
-        Cam_obj_EQ_L.location = location
+        Cam_obj_EQ_L.location = Cam_obj_EQ_F.location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_L)
 
 
@@ -239,7 +239,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_F.data.clip_end = 1000
         Cam_obj_F.data.sensor_width = 50
         Cam_obj_F.rotation_euler = front
-        Cam_obj_F.location = location
+        Cam_obj_F.location = Cam_obj_EQ_F.location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_F)
 
         # PERSPECTIVE BACK
@@ -251,7 +251,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_B.data.clip_end = 1000
         Cam_obj_B.data.sensor_width = 50
         Cam_obj_B.rotation_euler = back
-        Cam_obj_B.location = location
+        Cam_obj_B.location = Cam_obj_EQ_F.location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_B)
 
         # PERSPECTIVE TOP
@@ -263,7 +263,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_T.data.clip_end = 1000
         Cam_obj_T.data.sensor_width = 50
         Cam_obj_T.rotation_euler = top
-        Cam_obj_T.location = location
+        Cam_obj_T.location = Cam_obj_EQ_F.location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_T)
 
 
@@ -276,7 +276,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_D.data.clip_end = 1000
         Cam_obj_D.data.sensor_width = 50
         Cam_obj_D.rotation_euler = down
-        Cam_obj_D.location = location
+        Cam_obj_D.location = Cam_obj_EQ_F.location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_D)
 
 
@@ -289,7 +289,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_L.data.clip_end = 1000
         Cam_obj_L.data.sensor_width = 50
         Cam_obj_L.rotation_euler = left
-        Cam_obj_L.location = location
+        Cam_obj_L.location = Cam_obj_EQ_F.location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_L)
 
 
@@ -302,7 +302,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         Cam_obj_R.data.clip_end = 1000
         Cam_obj_R.data.sensor_width = 50
         Cam_obj_R.rotation_euler = right
-        Cam_obj_R.location = location
+        Cam_obj_R.location = Cam_obj_EQ_F.location
         scene.collection.children['Camera_System'].objects.link(Cam_obj_R)
 
 
