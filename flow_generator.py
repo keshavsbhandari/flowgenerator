@@ -533,7 +533,7 @@ class ADD_TO_VIEW_PORT(NODE_PT_MAINPANEL):
     bl_space_type = 'VIEW_3D'
    
 #classes = [MyProperties, CAMERA_SETUP, NODE_PT_MAINPANEL, ADD_TO_VIEW_PORT, NODE_OT_TEST]
-classes = [MyProperties, CAMERA_SETUP, ADD_TO_VIEW_PORT, NODE_OT_TEST]   
+classes = [MyProperties, CAMERA_SETUP, NODE_PT_MAINPANEL, NODE_OT_TEST]   
     
 def register():
     for cl in classes:
