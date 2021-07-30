@@ -526,7 +526,7 @@ class NODE_OT_TEST(bpy.types.Operator):
         
         return {'FINISHED'}
 
-class ADD_TO_VIEW_PORT(bpy.types.Panel):
+class ADD_TO_VIEW_PORT(NODE_PT_MAINPANEL):
     bl_space_type = 'VIEW_3D'
    
 classes = [MyProperties, CAMERA_SETUP, NODE_PT_MAINPANEL, ADD_TO_VIEW_PORT, NODE_OT_TEST]   
