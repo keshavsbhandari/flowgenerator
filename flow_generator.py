@@ -525,9 +525,11 @@ class NODE_OT_TEST(bpy.types.Operator):
                 link(render_layers.outputs[6], noise.inputs[0])
         
         return {'FINISHED'}
-                                        
+
+class ADD_TO_VIEW_PORT(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
    
-classes = [MyProperties, CAMERA_SETUP, NODE_PT_MAINPANEL,NODE_OT_TEST]
+classes = [MyProperties, CAMERA_SETUP, NODE_PT_MAINPANEL, ADD_TO_VIEW_PORT, NODE_OT_TEST]   
     
 def register():
     for cl in classes:
