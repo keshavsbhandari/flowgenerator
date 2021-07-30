@@ -51,6 +51,9 @@ class NODE_PT_MAINPANEL(bpy.types.Panel):
     bl_region_type = 'UI'
     bl_category = 'Set Flow Generator' 
 
+    def mydraw(self, context):
+        pass
+        
     def draw(self, context):
         layout = self.layout
         scene = context.scene
