@@ -109,15 +109,36 @@ class CAMERA_SETUP(bpy.types.Operator):
         right = (PI/2, 0, PI/2)
 
 
-        # Lets Create Previous Collections
-        if bpy.data.collections.get("Camera_System") is not None:
-            coll = bpy.data.collections.get("Camera_System")
-            bpy.data.collections.remove(coll)
+        # # Lets Create Previous Collections
+        # if bpy.data.collections.get("Camera_System") is not None:
+        #     coll = bpy.data.collections.get("Camera_System")
+        #     bpy.data.collections.remove(coll)
 
+        # make specific camera activated
+        mytool = scene.my_tool
+        scene.render.resolution_percentage = mytool.resolution
+
+        if "EQ" in mytool.camera_list:
+            scene.render.resolution_x = mytool.equi_width
+            scene.render.resolution_y = mytool.equi_width//2
+        else:
+            scene.render.resolution_x = mytool.cube_width
+            scene.render.resolution_y = mytool.cube_width
+
+        
+        cam = bpy.data.objects.get(mytool.camera_list)
+        if cam:
+            scene.camera = cam
+            return {"FINISHED"}
+        
         #Lets create a camera collections first
-        cam_collections = bpy.data.collections.new(name = "Camera_System")
-        cam_collections.name = "Camera_System"
-        scene.collection.children.link(cam_collections)
+        collnames, _ = zip(*bpy.data.collections.items())
+        if "Camera_System" in collnames:
+            cam_collections = bpy.data.collections.get("Camera_System")
+        else:
+            cam_collections = bpy.data.collections.new(name = "Camera_System")
+            cam_collections.name = "Camera_System"
+            scene.collection.children.link(cam_collections)
 
         list_of_camera = [
                             "Camera_EQ_F", 
@@ -150,180 +171,190 @@ class CAMERA_SETUP(bpy.types.Operator):
                 location = cam.location
                 break
         
-        for camname, cam in bpy.data.cameras.items():
-            if camname.split('.')[0] in list_of_camera:
-                bpy.data.cameras.remove(cam)
+        # for camname, cam in bpy.data.cameras.items():
+        #     if camname.split('.')[0] in list_of_camera:
+        #         bpy.data.cameras.remove(cam)
 
-        # EQUIRECTANGULAR FRONT
-        Cam_EQ_F = bpy.data.cameras.new(name = "Camera_EQ_F")
-        Cam_EQ_F.name = "Camera_EQ_F"
-        Cam_obj_EQ_F = bpy.data.objects.new('Camera', Cam_EQ_F)
-        Cam_obj_EQ_F.name = "Camera_EQ_F"
-        Cam_obj_EQ_F.data.type = 'PANO'
-        Cam_obj_EQ_F.data.cycles.panorama_type = "EQUIRECTANGULAR"
-        Cam_obj_EQ_F.data.sensor_width = 50
-        Cam_obj_EQ_F.rotation_euler = front
-        Cam_obj_EQ_F.location = location
-        scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_F)
+        all_cameras, _  = zip(*bpy.data.objects.items())
 
-        # EQUIRECTANGULAR BACK
-        Cam_EQ_B = bpy.data.cameras.new(name = "Camera_EQ_B")
-        Cam_EQ_B.name = "Camera_EQ_B"
-        Cam_obj_EQ_B = bpy.data.objects.new('Camera', Cam_EQ_B)
-        Cam_obj_EQ_B.name = "Camera_EQ_B"
-        Cam_obj_EQ_B.data.type = 'PANO'
-        Cam_obj_EQ_B.data.cycles.panorama_type = "EQUIRECTANGULAR"
-        Cam_obj_EQ_B.data.sensor_width = 50
-        Cam_obj_EQ_B.rotation_euler = back
-        Cam_obj_EQ_B.location = Cam_obj_EQ_F.location
-        scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_B)
+        all_cameras = list(map(lambda x:x.split(".")[0], all_cameras))
 
-        # EQUIRECTANGULAR TOP
-        Cam_EQ_T = bpy.data.cameras.new(name = "Camera_EQ_T")
-        Cam_EQ_T.name = "Camera_EQ_T"
-        Cam_obj_EQ_T = bpy.data.objects.new('Camera', Cam_EQ_T)
-        Cam_obj_EQ_T.name = "Camera_EQ_T"
-        Cam_obj_EQ_T.data.type = 'PANO'
-        Cam_obj_EQ_T.data.cycles.panorama_type = "EQUIRECTANGULAR"
-        Cam_obj_EQ_T.data.sensor_width = 50
-        Cam_obj_EQ_T.rotation_euler = top
-        Cam_obj_EQ_T.location = Cam_obj_EQ_F.location
-        scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_T)
+        Cam_obj_EQ_F = bpy.data.objects.get("Camera_EQ_F")
+        if "Cam_obj_EQ_F" not in all_cameras:
+            # EQUIRECTANGULAR FRONT
+            Cam_EQ_F = bpy.data.cameras.new(name = "Camera_EQ_F")
+            Cam_EQ_F.name = "Camera_EQ_F"
+            Cam_obj_EQ_F = bpy.data.objects.new('Camera', Cam_EQ_F)
+            Cam_obj_EQ_F.name = "Camera_EQ_F"
+            Cam_obj_EQ_F.data.type = 'PANO'
+            Cam_obj_EQ_F.data.cycles.panorama_type = "EQUIRECTANGULAR"
+            Cam_obj_EQ_F.data.sensor_width = 50
+            Cam_obj_EQ_F.rotation_euler = front
+            Cam_obj_EQ_F.location = location
+            scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_F)
 
-        # EQUIRECTANGULAR DOWN
-        Cam_EQ_D = bpy.data.cameras.new(name = "Camera_EQ_D")
-        Cam_EQ_D.name = "Camera_EQ_D"
-        Cam_obj_EQ_D = bpy.data.objects.new('Camera', Cam_EQ_D)
-        Cam_obj_EQ_D.name = "Camera_EQ_D"
-        Cam_obj_EQ_D.data.type = 'PANO'
-        Cam_obj_EQ_D.data.cycles.panorama_type = "EQUIRECTANGULAR"
-        Cam_obj_EQ_D.data.sensor_width = 50
-        Cam_obj_EQ_D.rotation_euler = down
-        Cam_obj_EQ_D.location = Cam_obj_EQ_F.location
-        scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_D)
+        
+        Cam_obj_EQ_B = bpy.data.objects.get("Camera_EQ_B")
+        if  "Cam_obj_EQ_B" not in all_cameras:                
+            # EQUIRECTANGULAR BACK
+            Cam_EQ_B = bpy.data.cameras.new(name = "Camera_EQ_B")
+            Cam_EQ_B.name = "Camera_EQ_B"
+            Cam_obj_EQ_B = bpy.data.objects.new('Camera', Cam_EQ_B)
+            Cam_obj_EQ_B.name = "Camera_EQ_B"
+            Cam_obj_EQ_B.data.type = 'PANO'
+            Cam_obj_EQ_B.data.cycles.panorama_type = "EQUIRECTANGULAR"
+            Cam_obj_EQ_B.data.sensor_width = 50
+            Cam_obj_EQ_B.rotation_euler = back
+            Cam_obj_EQ_B.location = Cam_obj_EQ_F.location
+            scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_B)
 
+        Cam_obj_EQ_T = bpy.data.objects.get("Cam_obj_EQ_T")
+        if "Cam_obj_EQ_T" not in all_cameras:    
+            # EQUIRECTANGULAR TOP
+            Cam_EQ_T = bpy.data.cameras.new(name = "Camera_EQ_T")
+            Cam_EQ_T.name = "Camera_EQ_T"
+            Cam_obj_EQ_T = bpy.data.objects.new('Camera', Cam_EQ_T)
+            Cam_obj_EQ_T.name = "Camera_EQ_T"
+            Cam_obj_EQ_T.data.type = 'PANO'
+            Cam_obj_EQ_T.data.cycles.panorama_type = "EQUIRECTANGULAR"
+            Cam_obj_EQ_T.data.sensor_width = 50
+            Cam_obj_EQ_T.rotation_euler = top
+            Cam_obj_EQ_T.location = Cam_obj_EQ_F.location
+            scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_T)
 
-        # EQUIRECTANGULAR RIGHT
-        Cam_EQ_R = bpy.data.cameras.new(name = "Camera_EQ_R")
-        Cam_EQ_R.name = "Camera_EQ_R"
-        Cam_obj_EQ_R = bpy.data.objects.new('Camera', Cam_EQ_R)
-        Cam_obj_EQ_R.name = "Camera_EQ_R"
-        Cam_obj_EQ_R.data.type = 'PANO'
-        Cam_obj_EQ_R.data.cycles.panorama_type = "EQUIRECTANGULAR"
-        Cam_obj_EQ_R.data.sensor_width = 50
-        Cam_obj_EQ_R.rotation_euler = right
-        Cam_obj_EQ_R.location = Cam_obj_EQ_F.location
-        scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_R)
-
-        # EQUIRECTANGULAR LEFT
-        Cam_EQ_L = bpy.data.cameras.new(name = "Camera_EQ_L")
-        Cam_EQ_L.name = "Camera_EQ_L"
-        Cam_obj_EQ_L = bpy.data.objects.new('Camera', Cam_EQ_L)
-        Cam_obj_EQ_L.name = "Camera_EQ_L"
-        Cam_obj_EQ_L.data.type = 'PANO'
-        Cam_obj_EQ_L.data.cycles.panorama_type = "EQUIRECTANGULAR"
-        Cam_obj_EQ_L.data.sensor_width = 50
-        Cam_obj_EQ_L.rotation_euler = left
-        Cam_obj_EQ_L.location = Cam_obj_EQ_F.location
-        scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_L)
+        Cam_obj_EQ_D = bpy.data.objects.get("Cam_obj_EQ_D")
+        if "Cam_obj_EQ_D" not in all_cameras:    
+            # EQUIRECTANGULAR DOWN
+            Cam_EQ_D = bpy.data.cameras.new(name = "Camera_EQ_D")
+            Cam_EQ_D.name = "Camera_EQ_D"
+            Cam_obj_EQ_D = bpy.data.objects.new('Camera', Cam_EQ_D)
+            Cam_obj_EQ_D.name = "Camera_EQ_D"
+            Cam_obj_EQ_D.data.type = 'PANO'
+            Cam_obj_EQ_D.data.cycles.panorama_type = "EQUIRECTANGULAR"
+            Cam_obj_EQ_D.data.sensor_width = 50
+            Cam_obj_EQ_D.rotation_euler = down
+            Cam_obj_EQ_D.location = Cam_obj_EQ_F.location
+            scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_D)
 
 
-        # PERSPECTIVE FRONT
-        Cam_F = bpy.data.cameras.new(name = "Camera_F")
-        Cam_F.name = "Camera_F"
-        Cam_F.name = "Camera_F"
-        Cam_F.name = "Camera_F"
-        Cam_obj_F = bpy.data.objects.new('Camera', Cam_F)
-        Cam_obj_F.name = "Camera_F"
-        Cam_obj_F.data.lens = 25
-        Cam_obj_F.data.clip_end = 1000
-        Cam_obj_F.data.sensor_width = 50
-        Cam_obj_F.rotation_euler = front
-        Cam_obj_F.location = Cam_obj_EQ_F.location
-        scene.collection.children['Camera_System'].objects.link(Cam_obj_F)
+        Cam_obj_EQ_R = bpy.data.objects.get("Cam_obj_EQ_R")
+        if "Cam_obj_EQ_R" not in all_cameras:    
+            # EQUIRECTANGULAR RIGHT
+            Cam_EQ_R = bpy.data.cameras.new(name = "Camera_EQ_R")
+            Cam_EQ_R.name = "Camera_EQ_R"
+            Cam_obj_EQ_R = bpy.data.objects.new('Camera', Cam_EQ_R)
+            Cam_obj_EQ_R.name = "Camera_EQ_R"
+            Cam_obj_EQ_R.data.type = 'PANO'
+            Cam_obj_EQ_R.data.cycles.panorama_type = "EQUIRECTANGULAR"
+            Cam_obj_EQ_R.data.sensor_width = 50
+            Cam_obj_EQ_R.rotation_euler = right
+            Cam_obj_EQ_R.location = Cam_obj_EQ_F.location
+            scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_R)
 
-        # PERSPECTIVE BACK
-        Cam_B = bpy.data.cameras.new(name = "Camera_B")
-        Cam_B.name = "Camera_B"
-        Cam_obj_B = bpy.data.objects.new('Camera', Cam_B)
-        Cam_obj_B.name = "Camera_B"
-        Cam_obj_B.data.lens = 25
-        Cam_obj_B.data.clip_end = 1000
-        Cam_obj_B.data.sensor_width = 50
-        Cam_obj_B.rotation_euler = back
-        Cam_obj_B.location = Cam_obj_EQ_F.location
-        scene.collection.children['Camera_System'].objects.link(Cam_obj_B)
-
-        # PERSPECTIVE TOP
-        Cam_T = bpy.data.cameras.new(name = "Camera_T")
-        Cam_T.name = "Camera_T"
-        Cam_obj_T = bpy.data.objects.new('Camera', Cam_T)
-        Cam_obj_T.name = "Camera_T"
-        Cam_obj_T.data.lens = 25
-        Cam_obj_T.data.clip_end = 1000
-        Cam_obj_T.data.sensor_width = 50
-        Cam_obj_T.rotation_euler = top
-        Cam_obj_T.location = Cam_obj_EQ_F.location
-        scene.collection.children['Camera_System'].objects.link(Cam_obj_T)
+        Cam_obj_EQ_L = bpy.data.objects.get("Cam_obj_EQ_L")
+        if "Cam_obj_EQ_L" not in all_cameras:    
+            # EQUIRECTANGULAR LEFT
+            Cam_EQ_L = bpy.data.cameras.new(name = "Camera_EQ_L")
+            Cam_EQ_L.name = "Camera_EQ_L"
+            Cam_obj_EQ_L = bpy.data.objects.new('Camera', Cam_EQ_L)
+            Cam_obj_EQ_L.name = "Camera_EQ_L"
+            Cam_obj_EQ_L.data.type = 'PANO'
+            Cam_obj_EQ_L.data.cycles.panorama_type = "EQUIRECTANGULAR"
+            Cam_obj_EQ_L.data.sensor_width = 50
+            Cam_obj_EQ_L.rotation_euler = left
+            Cam_obj_EQ_L.location = Cam_obj_EQ_F.location
+            scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_L)
 
 
-        # PERSPECTIVE DOWN
-        Cam_D = bpy.data.cameras.new(name = "Camera_D")
-        Cam_D.name = "Camera_D"
-        Cam_obj_D = bpy.data.objects.new('Camera', Cam_D)
-        Cam_obj_D.name = "Camera_D"
-        Cam_obj_D.data.lens = 25
-        Cam_obj_D.data.clip_end = 1000
-        Cam_obj_D.data.sensor_width = 50
-        Cam_obj_D.rotation_euler = down
-        Cam_obj_D.location = Cam_obj_EQ_F.location
-        scene.collection.children['Camera_System'].objects.link(Cam_obj_D)
+        Cam_F = bpy.data.objects.get("Cam_F")
+        if "Cam_F" not in all_cameras:    
+            # PERSPECTIVE FRONT
+            Cam_F = bpy.data.cameras.new(name = "Camera_F")
+            Cam_F.name = "Camera_F"
+            Cam_F.name = "Camera_F"
+            Cam_F.name = "Camera_F"
+            Cam_obj_F = bpy.data.objects.new('Camera', Cam_F)
+            Cam_obj_F.name = "Camera_F"
+            Cam_obj_F.data.lens = 25
+            Cam_obj_F.data.clip_end = 1000
+            Cam_obj_F.data.sensor_width = 50
+            Cam_obj_F.rotation_euler = front
+            Cam_obj_F.data.sensor_width = 50
+            Cam_obj_F.location = Cam_obj_EQ_F.location
+            scene.collection.children['Camera_System'].objects.link(Cam_obj_F)
+
+        Cam_obj_B = bpy.data.objects.get("Cam_obj_B")
+        if "Cam_obj_B" not in all_cameras:    
+            # PERSPECTIVE BACK
+            Cam_B = bpy.data.cameras.new(name = "Camera_B")
+            Cam_B.name = "Camera_B"
+            Cam_obj_B = bpy.data.objects.new('Camera', Cam_B)
+            Cam_obj_B.name = "Camera_B"
+            Cam_obj_B.data.lens = 25
+            Cam_obj_B.data.clip_end = 1000
+            Cam_obj_B.data.sensor_width = 50
+            Cam_obj_B.rotation_euler = back
+            Cam_obj_B.location = Cam_obj_EQ_F.location
+            scene.collection.children['Camera_System'].objects.link(Cam_obj_B)
+
+        Cam_obj_T = bpy.data.objects.get("Cam_obj_T")
+        if "Cam_obj_T" not in all_cameras:    
+            # PERSPECTIVE TOP
+            Cam_T = bpy.data.cameras.new(name = "Camera_T")
+            Cam_T.name = "Camera_T"
+            Cam_obj_T = bpy.data.objects.new('Camera', Cam_T)
+            Cam_obj_T.name = "Camera_T"
+            Cam_obj_T.data.lens = 25
+            Cam_obj_T.data.clip_end = 1000
+            Cam_obj_T.data.sensor_width = 50
+            Cam_obj_T.rotation_euler = top
+            Cam_obj_T.location = Cam_obj_EQ_F.location
+            scene.collection.children['Camera_System'].objects.link(Cam_obj_T)
 
 
-        # PERSPECTIVE LEFT
-        Cam_L = bpy.data.cameras.new(name = "Camera_L")
-        Cam_L.name = "Camera_L"
-        Cam_obj_L = bpy.data.objects.new('Camera', Cam_L)
-        Cam_obj_L.name = "Camera_L"
-        Cam_obj_L.data.lens = 25
-        Cam_obj_L.data.clip_end = 1000
-        Cam_obj_L.data.sensor_width = 50
-        Cam_obj_L.rotation_euler = left
-        Cam_obj_L.location = Cam_obj_EQ_F.location
-        scene.collection.children['Camera_System'].objects.link(Cam_obj_L)
+        Cam_obj_D = bpy.data.objects.get("Cam_obj_D")
+        if "Cam_obj_D" not in all_cameras:    
+            # PERSPECTIVE DOWN
+            Cam_D = bpy.data.cameras.new(name = "Camera_D")
+            Cam_D.name = "Camera_D"
+            Cam_obj_D = bpy.data.objects.new('Camera', Cam_D)
+            Cam_obj_D.name = "Camera_D"
+            Cam_obj_D.data.lens = 25
+            Cam_obj_D.data.clip_end = 1000
+            Cam_obj_D.data.sensor_width = 50
+            Cam_obj_D.rotation_euler = down
+            Cam_obj_D.location = Cam_obj_EQ_F.location
+            scene.collection.children['Camera_System'].objects.link(Cam_obj_D)
 
 
-        # PERSPECTIVE RIGHT
-        Cam_R = bpy.data.cameras.new(name = "Camera_R")
-        Cam_R.name = "Camera_R"
-        Cam_obj_R = bpy.data.objects.new('Camera', Cam_R)
-        Cam_obj_R.name = "Camera_R"
-        Cam_obj_R.data.lens = 25
-        Cam_obj_R.data.clip_end = 1000
-        Cam_obj_R.data.sensor_width = 50
-        Cam_obj_R.rotation_euler = right
-        Cam_obj_R.location = Cam_obj_EQ_F.location
-        scene.collection.children['Camera_System'].objects.link(Cam_obj_R)
+        Cam_obj_L = bpy.data.objects.get("Cam_obj_L")
+        if "Cam_obj_L" not in all_cameras:    
+            # PERSPECTIVE LEFT
+            Cam_L = bpy.data.cameras.new(name = "Camera_L")
+            Cam_L.name = "Camera_L"
+            Cam_obj_L = bpy.data.objects.new('Camera', Cam_L)
+            Cam_obj_L.name = "Camera_L"
+            Cam_obj_L.data.lens = 25
+            Cam_obj_L.data.clip_end = 1000
+            Cam_obj_L.data.sensor_width = 50
+            Cam_obj_L.rotation_euler = left
+            Cam_obj_L.location = Cam_obj_EQ_F.location
+            scene.collection.children['Camera_System'].objects.link(Cam_obj_L)
 
 
-
-        # make specific camera activated
-        mytool = scene.my_tool
-
-        cam = bpy.data.objects[mytool.camera_list]
-        scene.camera = cam
-
-
-        scene.render.resolution_percentage = mytool.resolution
-
-        if "EQ" in mytool.camera_list:
-            scene.render.resolution_x = mytool.equi_width
-            scene.render.resolution_y = mytool.equi_width//2
-        else:
-            scene.render.resolution_x = mytool.cube_width
-            scene.render.resolution_y = mytool.cube_width
-
-                
+        Cam_obj_R = bpy.data.objects.get("Cam_obj_R")
+        if "Cam_obj_R" not in all_cameras:    
+            # PERSPECTIVE RIGHT
+            Cam_R = bpy.data.cameras.new(name = "Camera_R")
+            Cam_R.name = "Camera_R"
+            Cam_obj_R = bpy.data.objects.new('Camera', Cam_R)
+            Cam_obj_R.name = "Camera_R"
+            Cam_obj_R.data.lens = 25
+            Cam_obj_R.data.clip_end = 1000
+            Cam_obj_R.data.sensor_width = 50
+            Cam_obj_R.rotation_euler = right
+            Cam_obj_R.location = Cam_obj_EQ_F.location
+            scene.collection.children['Camera_System'].objects.link(Cam_obj_R)                
         return {'FINISHED'}
 
 
