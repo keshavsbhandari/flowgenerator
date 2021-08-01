@@ -116,6 +116,14 @@ class CAMERA_SETUP(bpy.types.Operator):
 
         # make specific camera activated
         mytool = scene.my_tool
+
+        out_node_list = ["frame","depth","normal","flow","occlusion","noise"]
+
+        for outnode in out_node_list:
+            if scene.node_tree.nodes.get(outnode):
+                nodex = scene.node_tree.nodes.get(outnode)  
+                nodex.base_path = f'{mytool.my_path}/{outnode}/{mytool.camera_list}'
+
         scene.render.resolution_percentage = mytool.resolution
 
         if "EQ" in mytool.camera_list:
