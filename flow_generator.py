@@ -24,8 +24,8 @@ class MyProperties(bpy.types.PropertyGroup):
     cube_width : bpy.props.IntProperty(name = "Cube width", soft_min = 128, soft_max  = 1024, default = 512)
     equi_width : bpy.props.IntProperty(name = "Equi Width", soft_min = 256, soft_max  = 2048, default = 1024)
     
-    min_depth : bpy.props.FloatProperty(name = "Max Depth", soft_min = 0, soft_max  = 100000, default = 0.5)
-    max_depth : bpy.props.FloatProperty(name = "Min Depth", soft_min = 0, soft_max  = 100000, default = 20.0)
+    max_depth : bpy.props.FloatProperty(name = "Max Depth", soft_min = 0, soft_max  = 100000, default = 0.5)
+    min_depth : bpy.props.FloatProperty(name = "Min Depth", soft_min = 0, soft_max  = 100000, default = 20.0)
     camera_list : bpy.props.EnumProperty(
                 name = "Camera",
                 description = "sample text",
@@ -188,7 +188,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         all_cameras = list(map(lambda x:x.split(".")[0], all_cameras))
 
         Cam_obj_EQ_F = bpy.data.objects.get("Camera_EQ_F")
-        if "Cam_obj_EQ_F" not in all_cameras:
+        if "Cam_EQ_F" not in all_cameras:
             # EQUIRECTANGULAR FRONT
             Cam_EQ_F = bpy.data.cameras.new(name = "Camera_EQ_F")
             Cam_EQ_F.name = "Camera_EQ_F"
@@ -203,7 +203,7 @@ class CAMERA_SETUP(bpy.types.Operator):
 
         
         Cam_obj_EQ_B = bpy.data.objects.get("Camera_EQ_B")
-        if  "Cam_obj_EQ_B" not in all_cameras:                
+        if  "Cam_EQ_B" not in all_cameras:                
             # EQUIRECTANGULAR BACK
             Cam_EQ_B = bpy.data.cameras.new(name = "Camera_EQ_B")
             Cam_EQ_B.name = "Camera_EQ_B"
@@ -274,7 +274,7 @@ class CAMERA_SETUP(bpy.types.Operator):
             scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_L)
 
 
-        Cam_F = bpy.data.objects.get("Cam_F")
+        Cam_F = bpy.data.objects.get("Cam_obj_F")
         if "Cam_F" not in all_cameras:    
             # PERSPECTIVE FRONT
             Cam_F = bpy.data.cameras.new(name = "Camera_F")
