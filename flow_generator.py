@@ -188,7 +188,7 @@ class CAMERA_SETUP(bpy.types.Operator):
         all_cameras = list(map(lambda x:x.split(".")[0], all_cameras))
 
         Cam_obj_EQ_F = bpy.data.objects.get("Camera_EQ_F")
-        if "Cam_EQ_F" not in all_cameras:
+        if "Camera_EQ_F" not in all_cameras:
             # EQUIRECTANGULAR FRONT
             Cam_EQ_F = bpy.data.cameras.new(name = "Camera_EQ_F")
             Cam_EQ_F.name = "Camera_EQ_F"
@@ -203,7 +203,7 @@ class CAMERA_SETUP(bpy.types.Operator):
 
         
         Cam_obj_EQ_B = bpy.data.objects.get("Camera_EQ_B")
-        if  "Cam_EQ_B" not in all_cameras:                
+        if  "Camera_EQ_B" not in all_cameras:                
             # EQUIRECTANGULAR BACK
             Cam_EQ_B = bpy.data.cameras.new(name = "Camera_EQ_B")
             Cam_EQ_B.name = "Camera_EQ_B"
@@ -216,8 +216,8 @@ class CAMERA_SETUP(bpy.types.Operator):
             Cam_obj_EQ_B.location = Cam_obj_EQ_F.location
             scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_B)
 
-        Cam_obj_EQ_T = bpy.data.objects.get("Cam_obj_EQ_T")
-        if "Cam_obj_EQ_T" not in all_cameras:    
+        Cam_obj_EQ_T = bpy.data.objects.get("Camera_EQ_T")
+        if "Camera_EQ_T" not in all_cameras:    
             # EQUIRECTANGULAR TOP
             Cam_EQ_T = bpy.data.cameras.new(name = "Camera_EQ_T")
             Cam_EQ_T.name = "Camera_EQ_T"
@@ -230,8 +230,8 @@ class CAMERA_SETUP(bpy.types.Operator):
             Cam_obj_EQ_T.location = Cam_obj_EQ_F.location
             scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_T)
 
-        Cam_obj_EQ_D = bpy.data.objects.get("Cam_obj_EQ_D")
-        if "Cam_obj_EQ_D" not in all_cameras:    
+        Cam_obj_EQ_D = bpy.data.objects.get("Camera_EQ_D")
+        if "Camera_EQ_D" not in all_cameras:    
             # EQUIRECTANGULAR DOWN
             Cam_EQ_D = bpy.data.cameras.new(name = "Camera_EQ_D")
             Cam_EQ_D.name = "Camera_EQ_D"
@@ -245,8 +245,8 @@ class CAMERA_SETUP(bpy.types.Operator):
             scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_D)
 
 
-        Cam_obj_EQ_R = bpy.data.objects.get("Cam_obj_EQ_R")
-        if "Cam_obj_EQ_R" not in all_cameras:    
+        Cam_obj_EQ_R = bpy.data.objects.get("Camera_EQ_R")
+        if "Camera_EQ_R" not in all_cameras:    
             # EQUIRECTANGULAR RIGHT
             Cam_EQ_R = bpy.data.cameras.new(name = "Camera_EQ_R")
             Cam_EQ_R.name = "Camera_EQ_R"
@@ -259,8 +259,8 @@ class CAMERA_SETUP(bpy.types.Operator):
             Cam_obj_EQ_R.location = Cam_obj_EQ_F.location
             scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_R)
 
-        Cam_obj_EQ_L = bpy.data.objects.get("Cam_obj_EQ_L")
-        if "Cam_obj_EQ_L" not in all_cameras:    
+        Cam_obj_EQ_L = bpy.data.objects.get("Camera_EQ_L")
+        if "Camera_EQ_L" not in all_cameras:    
             # EQUIRECTANGULAR LEFT
             Cam_EQ_L = bpy.data.cameras.new(name = "Camera_EQ_L")
             Cam_EQ_L.name = "Camera_EQ_L"
@@ -274,8 +274,8 @@ class CAMERA_SETUP(bpy.types.Operator):
             scene.collection.children['Camera_System'].objects.link(Cam_obj_EQ_L)
 
 
-        Cam_F = bpy.data.objects.get("Cam_obj_F")
-        if "Cam_F" not in all_cameras:    
+        Cam_F = bpy.data.objects.get("Camera_F")
+        if "Camera_F" not in all_cameras:    
             # PERSPECTIVE FRONT
             Cam_F = bpy.data.cameras.new(name = "Camera_F")
             Cam_F.name = "Camera_F"
@@ -291,8 +291,8 @@ class CAMERA_SETUP(bpy.types.Operator):
             Cam_obj_F.location = Cam_obj_EQ_F.location
             scene.collection.children['Camera_System'].objects.link(Cam_obj_F)
 
-        Cam_obj_B = bpy.data.objects.get("Cam_obj_B")
-        if "Cam_obj_B" not in all_cameras:    
+        Cam_obj_B = bpy.data.objects.get("Camera_B")
+        if "Camera_B" not in all_cameras:    
             # PERSPECTIVE BACK
             Cam_B = bpy.data.cameras.new(name = "Camera_B")
             Cam_B.name = "Camera_B"
@@ -305,8 +305,8 @@ class CAMERA_SETUP(bpy.types.Operator):
             Cam_obj_B.location = Cam_obj_EQ_F.location
             scene.collection.children['Camera_System'].objects.link(Cam_obj_B)
 
-        Cam_obj_T = bpy.data.objects.get("Cam_obj_T")
-        if "Cam_obj_T" not in all_cameras:    
+        Cam_obj_T = bpy.data.objects.get("Camera_T")
+        if "Camera_T" not in all_cameras:    
             # PERSPECTIVE TOP
             Cam_T = bpy.data.cameras.new(name = "Camera_T")
             Cam_T.name = "Camera_T"
@@ -320,8 +320,8 @@ class CAMERA_SETUP(bpy.types.Operator):
             scene.collection.children['Camera_System'].objects.link(Cam_obj_T)
 
 
-        Cam_obj_D = bpy.data.objects.get("Cam_obj_D")
-        if "Cam_obj_D" not in all_cameras:    
+        Cam_obj_D = bpy.data.objects.get("Camera_D")
+        if "Camera_D" not in all_cameras:    
             # PERSPECTIVE DOWN
             Cam_D = bpy.data.cameras.new(name = "Camera_D")
             Cam_D.name = "Camera_D"
@@ -335,8 +335,8 @@ class CAMERA_SETUP(bpy.types.Operator):
             scene.collection.children['Camera_System'].objects.link(Cam_obj_D)
 
 
-        Cam_obj_L = bpy.data.objects.get("Cam_obj_L")
-        if "Cam_obj_L" not in all_cameras:    
+        Cam_obj_L = bpy.data.objects.get("Camera_L")
+        if "Camera_L" not in all_cameras:    
             # PERSPECTIVE LEFT
             Cam_L = bpy.data.cameras.new(name = "Camera_L")
             Cam_L.name = "Camera_L"
@@ -350,8 +350,8 @@ class CAMERA_SETUP(bpy.types.Operator):
             scene.collection.children['Camera_System'].objects.link(Cam_obj_L)
 
 
-        Cam_obj_R = bpy.data.objects.get("Cam_obj_R")
-        if "Cam_obj_R" not in all_cameras:    
+        Cam_obj_R = bpy.data.objects.get("Camera_R")
+        if "Camera_R" not in all_cameras:    
             # PERSPECTIVE RIGHT
             Cam_R = bpy.data.cameras.new(name = "Camera_R")
             Cam_R.name = "Camera_R"
