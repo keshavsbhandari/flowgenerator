@@ -134,10 +134,10 @@ class CAMERA_SETUP(bpy.types.Operator):
             scene.render.resolution_y = mytool.cube_width
 
         
-        cam = bpy.data.objects.get(mytool.camera_list)
-        if cam:
-            scene.camera = cam
-            return {"FINISHED"}
+        # cam = bpy.data.objects.get(mytool.camera_list)
+        # if cam:
+        #     scene.camera = cam
+        #     return {"FINISHED"}
         
         #Lets create a camera collections first
         collnames, _ = zip(*bpy.data.collections.items())
@@ -362,7 +362,9 @@ class CAMERA_SETUP(bpy.types.Operator):
             Cam_obj_R.data.sensor_width = 50
             Cam_obj_R.rotation_euler = right
             Cam_obj_R.location = Cam_obj_EQ_F.location
-            scene.collection.children['Camera_System'].objects.link(Cam_obj_R)                
+            scene.collection.children['Camera_System'].objects.link(Cam_obj_R)
+        scene.camera = bpy.data.objects.get(mytool.camera_list)
+        
         return {'FINISHED'}
 
 
