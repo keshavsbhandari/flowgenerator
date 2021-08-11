@@ -183,9 +183,11 @@ class CAMERA_SETUP(bpy.types.Operator):
         #     if camname.split('.')[0] in list_of_camera:
         #         bpy.data.cameras.remove(cam)
 
-        all_cameras, _  = zip(*bpy.data.objects.items())
+        all_cameras = []
 
-        all_cameras = list(map(lambda x:x.split(".")[0], all_cameras))
+        if bpy.data.objects.items():    
+            all_cameras, _  = zip(*bpy.data.objects.items())
+            all_cameras = list(map(lambda x:x.split(".")[0], all_cameras))
 
         Cam_obj_EQ_F = bpy.data.objects.get("Camera_EQ_F")
         if "Camera_EQ_F" not in all_cameras:
