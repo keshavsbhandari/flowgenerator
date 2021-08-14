@@ -24,8 +24,8 @@ class MyProperties(bpy.types.PropertyGroup):
     cube_width : bpy.props.IntProperty(name = "Cube width", soft_min = 128, soft_max  = 1024, default = 512)
     equi_width : bpy.props.IntProperty(name = "Equi Width", soft_min = 256, soft_max  = 2048, default = 1024)
     
-    max_depth : bpy.props.FloatProperty(name = "Max Depth", soft_min = 0, soft_max  = 100000, default = 0.5)
-    min_depth : bpy.props.FloatProperty(name = "Min Depth", soft_min = 0, soft_max  = 100000, default = 20.0)
+    max_depth : bpy.props.FloatProperty(name = "Max Depth", soft_min = 0, soft_max  = 100000, default = 100)
+    min_depth : bpy.props.FloatProperty(name = "Min Depth", soft_min = 0, soft_max  = 100000, default = 0.05)
     camera_list : bpy.props.EnumProperty(
                 name = "Camera",
                 description = "sample text",
@@ -389,10 +389,10 @@ class NODE_OT_TEST(bpy.types.Operator):
         bpy.ops.object.select_all(action='SELECT')
         selection = context.selected_objects
 
-        for obj in selection:
+        for i,obj in enumerate(selection):
             obj.select_set(True)
             #change '8' to whichever pass index you choose
-            obj.pass_index = 8
+            obj.pass_index = i
             obj.select_set(False)
 
         for obj in prior_selection:
@@ -404,7 +404,7 @@ class NODE_OT_TEST(bpy.types.Operator):
         
         scene.cycles.use_denoising = True
         scene.view_layers["View Layer"].use_pass_combined = True
-        scene.view_layers["View Layer"].use_pass_combined = True
+        scene.view_layers["View Layer"].use_pass_mist = True
         scene.view_layers["View Layer"].use_pass_normal = True
         scene.view_layers["View Layer"].use_pass_vector = True
         scene.view_layers["View Layer"].use_pass_object_index = True  
@@ -452,18 +452,22 @@ class NODE_OT_TEST(bpy.types.Operator):
             frame.format.color_mode = "RGB"
             #----------------------------------------------
         
+        scene.world.mist_settings.start = mytool.min_depth
+        scene.world.mist_settings.depth = mytool.max_depth
         
-        if scene.node_tree.nodes.get("mapper") is None:
-            #for depth
-            #----------------------------------------------
-            mapper = scene.node_tree.nodes.new('CompositorNodeMapRange')
-            mapper.name = "mapper"
-            mapper.location = (300, 600)
-            mapper.use_clamp = True
-            mapper.inputs[1].default_value = mytool.min_depth
-            mapper.inputs[2].default_value = mytool.max_depth
-            mapper.inputs[3].default_value = 0
-            mapper.inputs[4].default_value = 1
+        # if scene.node_tree.nodes.get("mapper") is None:
+        #     #for depth
+        #     #----------------------------------------------
+        #     mapper = scene.node_tree.nodes.new('CompositorNodeMapRange')
+        #     mapper.name = "mapper"
+        #     mapper.location = (300, 600)
+        #     mapper.use_clamp = True
+        #     #mapper.inputs[1].default_value = mytool.min_depth
+        #     scene.world.mist_settings.start = mytool.min_depth
+        #     scene.world.mist_settings.depth = mytool.max_depth
+        #     #mapper.inputs[2].default_value = mytool.max_depth
+        #     #mapper.inputs[3].default_value = 0
+        #     #mapper.inputs[4].default_value = 1
             
         if scene.node_tree.nodes.get("depth") is None:
             #---create output-link
@@ -478,12 +482,12 @@ class NODE_OT_TEST(bpy.types.Operator):
             depth.format.exr_codec = 'ZIP'
             
             
-        #create link
-        if (scene.node_tree.nodes.get("mapper") is not None) and (scene.node_tree.nodes.get("depth") is not None):
-            mapper = scene.node_tree.nodes.get("mapper")
-            depth = scene.node_tree.nodes.get("depth")
-            link_to_depth = scene.node_tree.links.new
-            link_to_depth(mapper.outputs[0], depth.inputs[0])
+        # #create link
+        # if scene.node_tree.nodes.get("depth") is not None:
+        #     #mapper = scene.node_tree.nodes.get("mapper")
+        #     depth = scene.node_tree.nodes.get("depth")
+        #     link_to_depth = scene.node_tree.links.new
+        #     link_to_depth(mapper.outputs[0], depth.inputs[0])
         #----------------------------------------------
         
         if scene.node_tree.nodes.get("normal") is None:
@@ -597,9 +601,9 @@ class NODE_OT_TEST(bpy.types.Operator):
             if scene.node_tree.nodes.get("frame") is not None:
                 frame = scene.node_tree.nodes.get("frame")
                 link(render_layers.outputs[0], frame.inputs[0])
-            if scene.node_tree.nodes.get("mapper") is not None:
-                mapper = scene.node_tree.nodes.get("mapper")
-                link(render_layers.outputs[2], mapper.inputs[0])
+            if scene.node_tree.nodes.get("depth") is not None:
+                depth = scene.node_tree.nodes.get("depth")
+                link(render_layers.outputs[2], depth.inputs[0])
             if scene.node_tree.nodes.get("normal") is not None:
                 normal = scene.node_tree.nodes.get("normal")
                 link(render_layers.outputs[3], normal.inputs[0])
