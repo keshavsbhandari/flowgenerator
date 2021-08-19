@@ -117,6 +117,9 @@ class CAMERA_SETUP(bpy.types.Operator):
         # make specific camera activated
         mytool = scene.my_tool
 
+        scene.world.mist_settings.start = mytool.min_depth
+        scene.world.mist_settings.depth = mytool.max_depth
+
         out_node_list = ["frame","depth","normal","flow","occlusion","noise"]
 
         for outnode in out_node_list:
@@ -392,7 +395,7 @@ class NODE_OT_TEST(bpy.types.Operator):
         for i,obj in enumerate(selection):
             obj.select_set(True)
             #change '8' to whichever pass index you choose
-            obj.pass_index = i
+            obj.pass_index = 8
             obj.select_set(False)
 
         for obj in prior_selection:
