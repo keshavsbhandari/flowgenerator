@@ -403,11 +403,12 @@ class NODE_OT_TEST(bpy.types.Operator):
             
         
         scene.cycles.use_denoising = True
-        scene.view_layers["View Layer"].use_pass_combined = True
-        scene.view_layers["View Layer"].use_pass_mist = True
-        scene.view_layers["View Layer"].use_pass_normal = True
-        scene.view_layers["View Layer"].use_pass_vector = True
-        scene.view_layers["View Layer"].use_pass_object_index = True  
+        layer_name,_ = scene.view_layers.items()[0]#layer_name should be "View Layer"
+        scene.view_layers[layer_name].use_pass_combined = True
+        scene.view_layers[layer_name].use_pass_mist = True
+        scene.view_layers[layer_name].use_pass_normal = True
+        scene.view_layers[layer_name].use_pass_vector = True
+        scene.view_layers[layer_name].use_pass_object_index = True  
         
         if scene.node_tree.nodes.get("render_layers_root") is None:
             #render layers
@@ -499,7 +500,7 @@ class NODE_OT_TEST(bpy.types.Operator):
             normal.width, normal.height = 500,100
             normal.base_path = f'{mytool.my_path}/normal/{mytool.camera_list}'
             normal.format.file_format = "OPEN_EXR"
-            normal.format.color_mode = "RGB"
+            normal.format.color_mode = "RGBA"
             normal.format.color_depth = "32"
             normal.format.exr_codec = 'ZIP'    
             #----------------------------------------------
