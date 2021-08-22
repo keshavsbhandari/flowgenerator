@@ -430,6 +430,7 @@ class NODE_OT_TEST(bpy.types.Operator):
         scene.cycles.use_denoising = True
         layer_name,_ = scene.view_layers.items()[0]#layer_name should be "View Layer"
         scene.view_layers[layer_name].use_pass_combined = True
+        scene.view_layers[layer_name].use_pass_z = True
         scene.view_layers[layer_name].use_pass_mist = True
         scene.view_layers[layer_name].use_pass_normal = True
         scene.view_layers[layer_name].use_pass_vector = True
@@ -641,15 +642,15 @@ class NODE_OT_TEST(bpy.types.Operator):
             #     link(render_layers.outputs[0], frame.inputs[0])
             if scene.node_tree.nodes.get("depth") is not None:
                 depth = scene.node_tree.nodes.get("depth")
-                link(render_layers.outputs[3], depth.inputs[0])
+                link(render_layers.outputs['Mist'], depth.inputs[0])
             if scene.node_tree.nodes.get("normal") is not None:
                 normal = scene.node_tree.nodes.get("normal")
-                link(render_layers.outputs[4], normal.inputs[0])
+                link(render_layers.outputs['Normal'], normal.inputs[0])
             if scene.node_tree.nodes.get("seprgb") is not None:
                 seprgb = scene.node_tree.nodes.get("seprgb")
                 raw_flow = scene.node_tree.nodes.get("raw_flow")
-                link(render_layers.outputs[5], seprgb.inputs[0])
-                link(render_layers.outputs[5], raw_flow.inputs[0])
+                link(render_layers.outputs['Vector'], seprgb.inputs[0])
+                link(render_layers.outputs['Vector'], raw_flow.inputs[0])
             # if scene.node_tree.nodes.get("idmask") is not None:
             #     idmask = scene.node_tree.nodes.get("idmask")
             #     link(render_layers.outputs[5], idmask.inputs[0])
