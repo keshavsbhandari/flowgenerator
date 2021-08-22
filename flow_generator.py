@@ -120,12 +120,16 @@ class CAMERA_SETUP(bpy.types.Operator):
         scene.world.mist_settings.start = mytool.min_depth
         scene.world.mist_settings.depth = mytool.max_depth
 
-        out_node_list = ["frame","depth","normal","flow","occlusion","noise"]
+        out_node_list = ["normal","flow","depth","raw_flow"]
+
+        #out_node_list = ["frame","depth","normal","flow","occlusion","noise"]
 
         for outnode in out_node_list:
             if scene.node_tree.nodes.get(outnode):
                 nodex = scene.node_tree.nodes.get(outnode)  
-                nodex.base_path = f'{mytool.my_path}/{outnode}/{mytool.camera_list}'
+                nodex.base_path = f'{mytool.my_path}/{outnode}/{mytool.camera_list}/'
+
+        scene.render.filepath = f'{mytool.my_path}/frame/{mytool.camera_list}/'
 
         scene.render.resolution_percentage = mytool.resolution
 
@@ -379,7 +383,25 @@ class NODE_OT_TEST(bpy.types.Operator):
     
     def execute(self, context):
         scene = context.scene
-        scene.use_nodes = True     
+
+        # if scene.node_tree.nodes.get("render_layers_root") is None:
+        #     #render layers
+        #     #render_layers = scene.node_tree.nodes["Render Layers"]
+        #     render_layers = bpy.context.scene.node_tree.nodes.new("CompositorNodeRLayers")
+        #     render_layers.name = "render_layers_root"
+        #     render_layers.location = (0,400)
+
+        if scene.use_nodes:
+            render_layers = bpy.context.scene.node_tree.nodes.get("render_layers_root")
+            if render_layers is None:    
+                render_layers = bpy.context.scene.node_tree.nodes.new("CompositorNodeRLayers")
+        else:
+            scene.use_nodes = True
+            render_layers = bpy.context.scene.node_tree.nodes.get("Render Layers")
+        
+        render_layers.name = "render_layers_root"
+        render_layers.location = (0,400)
+
         #setup fiew things first
         try:
             scene.render.engine = 'crowdrender'
@@ -388,18 +410,18 @@ class NODE_OT_TEST(bpy.types.Operator):
             
         # start indexing every objects for occlusion
         #-------------------------------------------
-        prior_selection = context.selected_objects
-        bpy.ops.object.select_all(action='SELECT')
-        selection = context.selected_objects
+        # prior_selection = context.selected_objects
+        # bpy.ops.object.select_all(action='SELECT')
+        # selection = context.selected_objects
 
-        for i,obj in enumerate(selection):
-            obj.select_set(True)
-            #change '8' to whichever pass index you choose
-            obj.pass_index = 8
-            obj.select_set(False)
+        # for i,obj in enumerate(selection):
+        #     obj.select_set(True)
+        #     #change '8' to whichever pass index you choose
+        #     obj.pass_index = 8
+        #     obj.select_set(False)
 
-        for obj in prior_selection:
-            obj.select_set(True)
+        # for obj in prior_selection:
+        #     obj.select_set(True)
         
         # Finish setting up index for occlusion
         #-------------------------------------------
@@ -413,12 +435,7 @@ class NODE_OT_TEST(bpy.types.Operator):
         scene.view_layers[layer_name].use_pass_vector = True
         scene.view_layers[layer_name].use_pass_object_index = True  
         
-        if scene.node_tree.nodes.get("render_layers_root") is None:
-            #render layers
-            #render_layers = scene.node_tree.nodes["Render Layers"]
-            render_layers = bpy.context.scene.node_tree.nodes.new("CompositorNodeRLayers")
-            render_layers.name = "render_layers_root"
-            render_layers.location = (0,400)
+        
             
         
         
@@ -433,28 +450,31 @@ class NODE_OT_TEST(bpy.types.Operator):
             scene.render.resolution_x = mytool.cube_width
             scene.render.resolution_y = mytool.cube_width    
         
-        out_node_list = ["frame","depth","normal","flow","occlusion","noise"]
+        #out_node_list = ["frame","depth","normal","flow","occlusion","noise"]
+        out_node_list = ["normal","flow","depth","raw_flow"]
 
         for outnode in out_node_list:
             if scene.node_tree.nodes.get(outnode):
                 nodex = scene.node_tree.nodes.get(outnode)  
-                nodex.base_path = f'{mytool.my_path}/{outnode}/{mytool.camera_list}'
+                nodex.base_path = f'{mytool.my_path}/{outnode}/{mytool.camera_list}/'
         
-        if scene.node_tree.nodes.get("frame") is None:
-            # for frame
-            #----------------------------------------------
-            frame = scene.node_tree.nodes.new('CompositorNodeOutputFile')
-            frame.name = "frame"
-            frame.width, frame.height = 500,100
-            #frame.name , this can be changed by bpy.data.scenes['Scene'].node_tree.nodes["ImageX"]
-            #frame.width, frame.height = 
-            frame.location = (300,800)
-            frame.base_path = f'{mytool.my_path}/frame/{mytool.camera_list}'
-            frame.format.file_format = "PNG"
-            frame.format.color_depth = "16"
-            frame.format.compression = 0
-            frame.format.color_mode = "RGB"
-            #----------------------------------------------
+        # if scene.node_tree.nodes.get("frame") is None:
+        #     # for frame
+        #     #----------------------------------------------
+        #     frame = scene.node_tree.nodes.new('CompositorNodeOutputFile')
+        #     frame.name = "frame"
+        #     frame.width, frame.height = 500,100
+        #     #frame.name , this can be changed by bpy.data.scenes['Scene'].node_tree.nodes["ImageX"]
+        #     #frame.width, frame.height = 
+        #     frame.location = (300,800)
+        #     frame.base_path = f'{mytool.my_path}/frame/{mytool.camera_list}'
+        #     frame.format.file_format = "PNG"
+        #     frame.format.color_depth = "16"
+        #     frame.format.compression = 0
+        #     frame.format.color_mode = "RGB"
+        #     #----------------------------------------------
+
+        scene.render.filepath = f'{mytool.my_path}/frame/{mytool.camera_list}/'
         
         scene.world.mist_settings.start = mytool.min_depth
         scene.world.mist_settings.depth = mytool.max_depth
@@ -477,13 +497,27 @@ class NODE_OT_TEST(bpy.types.Operator):
             #---create output-link
             depth = scene.node_tree.nodes.new('CompositorNodeOutputFile')
             depth.name = "depth"
-            depth.location = (500, 600)
+            depth.location = (300, 510)
             depth.width, depth.height = 500, 100
-            depth.base_path = f'{mytool.my_path}/depth/{mytool.camera_list}'
+            depth.base_path = f'{mytool.my_path}/depth/{mytool.camera_list}/'
             depth.format.file_format = "OPEN_EXR"
             depth.format.color_mode = "RGB"
             depth.format.color_depth = "32"
             depth.format.exr_codec = 'ZIP'
+
+        if scene.node_tree.nodes.get("raw_flow") is None:
+            #---create output-link
+            raw_flow = scene.node_tree.nodes.new('CompositorNodeOutputFile')
+            raw_flow.name = "raw_flow"
+            raw_flow.location = (300, 100)
+            raw_flow.width, depth.height = 500, 100
+            raw_flow.base_path = f'{mytool.my_path}/raw_flow/{mytool.camera_list}/'
+            raw_flow.format.file_format = "OPEN_EXR"
+            raw_flow.format.color_mode = "RGBA"
+            raw_flow.format.color_depth = "32"
+            raw_flow.format.exr_codec = 'ZIP'
+
+        
             
             
         # #create link
@@ -501,7 +535,7 @@ class NODE_OT_TEST(bpy.types.Operator):
             normal.name = "normal"
             normal.location = (300,400)
             normal.width, normal.height = 500,100
-            normal.base_path = f'{mytool.my_path}/normal/{mytool.camera_list}'
+            normal.base_path = f'{mytool.my_path}/normal/{mytool.camera_list}/'
             normal.format.file_format = "OPEN_EXR"
             normal.format.color_mode = "RGBA"
             normal.format.color_depth = "32"
@@ -538,7 +572,7 @@ class NODE_OT_TEST(bpy.types.Operator):
             flow.name = "flow"
             flow.location = (650,290)
             flow.width, flow.height = 500,100
-            flow.base_path = f'{mytool.my_path}/flow/{mytool.camera_list}'
+            flow.base_path = f'{mytool.my_path}/flow/{mytool.camera_list}/'
             flow.format.file_format = "OPEN_EXR"
             flow.format.color_mode = "RGBA"
             flow.format.color_depth = "32"
@@ -557,69 +591,71 @@ class NODE_OT_TEST(bpy.types.Operator):
         
         #for occlusions
         #----------------------------------------------
-        if scene.node_tree.nodes.get("idmask") is None:
-            #IDMASK
-            idmask = scene.node_tree.nodes.new('CompositorNodeIDMask')
-            idmask.name = "idmask"
-            idmask.location = (300, 140)
-            idmask.use_antialiasing = True
-            idmask.index = 8
+        # if scene.node_tree.nodes.get("idmask") is None:
+        #     #IDMASK
+        #     idmask = scene.node_tree.nodes.new('CompositorNodeIDMask')
+        #     idmask.name = "idmask"
+        #     idmask.location = (300, 140)
+        #     idmask.use_antialiasing = True
+        #     idmask.index = 8
         
-        if scene.node_tree.nodes.get("occlusion") is None:
-            # occlusion
-            occlusion = scene.node_tree.nodes.new('CompositorNodeOutputFile')
-            occlusion.name = "occlusion"
-            occlusion.location = (500,140)
-            occlusion.width, occlusion.height = 500,100
-            occlusion.base_path = f'{mytool.my_path}/occlusion/{mytool.camera_list}'
-            occlusion.format.file_format = "OPEN_EXR"
-            occlusion.format.color_mode = "RGBA"
-            occlusion.format.color_depth = "32"
-            occlusion.format.exr_codec = "NONE"
+        # if scene.node_tree.nodes.get("occlusion") is None:
+        #     # occlusion
+        #     occlusion = scene.node_tree.nodes.new('CompositorNodeOutputFile')
+        #     occlusion.name = "occlusion"
+        #     occlusion.location = (500,140)
+        #     occlusion.width, occlusion.height = 500,100
+        #     occlusion.base_path = f'{mytool.my_path}/occlusion/{mytool.camera_list}/'
+        #     occlusion.format.file_format = "OPEN_EXR"
+        #     occlusion.format.color_mode = "RGBA"
+        #     occlusion.format.color_depth = "32"
+        #     occlusion.format.exr_codec = "NONE"
         
-        #LINK IDMASK WITH OCCLUSION
-        if (scene.node_tree.nodes.get("idmask") is not None) and (scene.node_tree.nodes.get("occlusion") is not None):
-            idmask = scene.node_tree.nodes.get("idmask")
-            occlusion = scene.node_tree.nodes.get("occlusion")
-            link_mask_to_occlusion = scene.node_tree.links.new
-            link_mask_to_occlusion(idmask.outputs[0], occlusion.inputs[0])
-        #----------------------------------------------
+        # #LINK IDMASK WITH OCCLUSION
+        # if (scene.node_tree.nodes.get("idmask") is not None) and (scene.node_tree.nodes.get("occlusion") is not None):
+        #     idmask = scene.node_tree.nodes.get("idmask")
+        #     occlusion = scene.node_tree.nodes.get("occlusion")
+        #     link_mask_to_occlusion = scene.node_tree.links.new
+        #     link_mask_to_occlusion(idmask.outputs[0], occlusion.inputs[0])
+        # #----------------------------------------------
         
         
         #For noise
         #----------------------------------------------
-        if scene.node_tree.nodes.get("noise") is None:
-            noise = scene.node_tree.nodes.new('CompositorNodeOutputFile')
-            noise.name = "noise"
-            noise.location = (300,0)
-            noise.width, noise.height = 500,100
-            noise.base_path = f'{mytool.my_path}/noise/{mytool.camera_list}'
-            noise.format.file_format = "PNG"
-            noise.format.color_mode = "RGB"
-            noise.format.color_depth = "16"
+        # if scene.node_tree.nodes.get("noise") is None:
+        #     noise = scene.node_tree.nodes.new('CompositorNodeOutputFile')
+        #     noise.name = "noise"
+        #     noise.location = (300,0)
+        #     noise.width, noise.height = 500,100
+        #     noise.base_path = f'{mytool.my_path}/noise/{mytool.camera_list}/'
+        #     noise.format.file_format = "PNG"
+        #     noise.format.color_mode = "RGB"
+        #     noise.format.color_depth = "16"
         
         # LETS DO SOME LINKING
         if scene.node_tree.nodes.get("render_layers_root") is not None:
             render_layers = scene.node_tree.nodes.get("render_layers_root")
             link = scene.node_tree.links.new
-            if scene.node_tree.nodes.get("frame") is not None:
-                frame = scene.node_tree.nodes.get("frame")
-                link(render_layers.outputs[0], frame.inputs[0])
+            # if scene.node_tree.nodes.get("frame") is not None:
+            #     frame = scene.node_tree.nodes.get("frame")
+            #     link(render_layers.outputs[0], frame.inputs[0])
             if scene.node_tree.nodes.get("depth") is not None:
                 depth = scene.node_tree.nodes.get("depth")
-                link(render_layers.outputs[2], depth.inputs[0])
+                link(render_layers.outputs[3], depth.inputs[0])
             if scene.node_tree.nodes.get("normal") is not None:
                 normal = scene.node_tree.nodes.get("normal")
-                link(render_layers.outputs[3], normal.inputs[0])
+                link(render_layers.outputs[4], normal.inputs[0])
             if scene.node_tree.nodes.get("seprgb") is not None:
                 seprgb = scene.node_tree.nodes.get("seprgb")
-                link(render_layers.outputs[4], seprgb.inputs[0])
-            if scene.node_tree.nodes.get("idmask") is not None:
-                idmask = scene.node_tree.nodes.get("idmask")
-                link(render_layers.outputs[5], idmask.inputs[0])
-            if scene.node_tree.nodes.get("noise") is not None:
-                noise = scene.node_tree.nodes.get("noise")
-                link(render_layers.outputs[6], noise.inputs[0])
+                raw_flow = scene.node_tree.nodes.get("raw_flow")
+                link(render_layers.outputs[5], seprgb.inputs[0])
+                link(render_layers.outputs[5], raw_flow.inputs[0])
+            # if scene.node_tree.nodes.get("idmask") is not None:
+            #     idmask = scene.node_tree.nodes.get("idmask")
+            #     link(render_layers.outputs[5], idmask.inputs[0])
+            # if scene.node_tree.nodes.get("noise") is not None:
+            #     noise = scene.node_tree.nodes.get("noise")
+            #     link(render_layers.outputs[6], noise.inputs[0])
         
         return {'FINISHED'}
 
